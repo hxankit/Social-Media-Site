@@ -1,50 +1,22 @@
 # Node.js
 node_modules/
-npm-debug.log
-yarn-error.log
+Backend/.env
+Backend/node_modules
+*.env
+.npm/
+.yarn/
+.pnp/
+.pnp.js
 
 # Logs
 logs/
 *.log
-*.log.*
 
-# Dependency directories
-jspm_packages/
-bower_components/
-
-# Build directories
-dist/
-build/
-
-# Environment variables
-.env
-
-# IDEs and editors
-.idea/
-.vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-
-# OS files
+# OS-specific files
 .DS_Store
 Thumbs.db
 
-# Coverage directory used by tools like istanbul
-coverage/
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Optional REPL history
-.node_repl_history
-
-# Miscellaneous
-*.swp
-*.lock
-*.bak
-*.tmp
+# IDE/Editor specific files
+.vscode/
+.idea/
+Backend/node_modules/
