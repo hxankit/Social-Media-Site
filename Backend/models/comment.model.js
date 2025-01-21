@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
+import User from "./user.model.js";
+import Post from "./post.model.js";
 const commentSchema = new mongoose.Schema({
     text: {
         type: String,
         required: true
     },
-    author: {
+    auther: {
         type: mongoose.Schema.Types.ObjectId,
         ref: User,
         required: true
@@ -15,4 +17,4 @@ const commentSchema = new mongoose.Schema({
         required: true
     },
 })
-export default Post = mongoose.model('Post',postSchema);
+export default  mongoose.model('Comment',commentSchema);

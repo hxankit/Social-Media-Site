@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import cloudinary from '../utils/cloudinary.js';
 import getDataUri from '../utils/dataUri.js';
+import Post from '../models/post.model.js';
 
 
 const register = async (req, res) => {
@@ -39,61 +40,78 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        // Validate email and password fields
         if (!email || !password) {
-            return res.status(401).json({
-                message: "Please fill all the fields",
-                succes: false
-            })
+            return res.status(400).json({
+                message: "Please fill in all the fields",
+                success: false,
+            });
         }
+
+        // Find the user by email
         let user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({
                 message: "Invalid credentials",
-                success: false
-            })
+                success: false,
+            });
         }
+
+        // Compare passwords
         const isPasswordMatch = await bcrypt.compare(password, user.password);
         if (!isPasswordMatch) {
             return res.status(401).json({
-                message: "Invalid Password",
-                success: false
-            })
+                message: "Invalid password",
+                success: false,
+            });
         }
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" })
-        user = {
+        // Generate JWT token
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+
+        // Populate posts created by the user (if needed)
+        const populatedPosts = await Promise.all(
+            user.post.map(async (postId) => {
+                const post = await Post.findById(postId);
+                return post && post.auther.equals(user._id) ? post : null;
+            })
+        ).then(posts => posts.filter(post => post)); // Filter out null values
+
+        // Construct user response object
+        const userResponse = {
             userId: user._id,
             username: user.username,
             email: user.email,
             profilepic: user.profilepic,
             profilebio: user.profilebio,
-            posts: user.post,
+            posts: populatedPosts,
             followers: user.followers,
             following: user.following,
-        }
+        };
 
-        return res.cookie('token', token, {
+        // Send token as a secure cookie
+        return res.cookie("token", token, {
             httpOnly: true,
-            sameSite: true,  // This could cause issues depending on your environment
-            maxAge: 1 * 24 * 60 * 60 * 1000,
+            sameSite: "strict", // For better security
+            maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
         })
-            .json({
-                message: `Welcome Back ${user.username}`,
-                success: true,
-                user
-
-
-            })
-
-
-
+        .json({
+            message: `Welcome back, ${user.username}!`,
+            success: true,
+            user: userResponse,
+        });
 
     } catch (error) {
-        console.log(error.message);
-
+        console.error("Error during login:", error.message);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false,
+        });
     }
+};
 
-}
+
 const logout = async (req, res) => {
     try {
         return res.cookie('token', "", { maxAge: 0 }).json({
@@ -109,9 +127,9 @@ const getProfile = async (req, res) => {
     try {
         const userId = req.params.id;
         console.log("this is params");
-        
+
         // console.log(req.params._id);
-        
+
 
         // Find user by ID
         const user = await User.findById(userId).select("-password");
@@ -261,5 +279,5 @@ export {
     editProfile,
     suggestedUsers,
     followUnfollow
-    
+
 }

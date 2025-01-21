@@ -4,6 +4,10 @@ export const isAuthenticated = async (req, res, next) => {
     try {
         const token = req.cookies.token;
         // console.log(token);
+        // console.log(req.body);
+        // console.log(req.files);
+        
+        
         
 
         if (!token) {

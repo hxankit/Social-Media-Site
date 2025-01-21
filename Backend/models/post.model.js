@@ -4,11 +4,11 @@ const postSchema = new mongoose.Schema({
         type:String,
         default:""
     },
-    img:{
+    image:{
         type:String,
         required:true
     },
-    author:{
+    auther:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
         required:true,
@@ -26,4 +26,4 @@ const postSchema = new mongoose.Schema({
 },{
     timestamps:true
 })
-export default Post = mongoose.model('Post',postSchema);    
+export default mongoose.model('Post',postSchema);    
