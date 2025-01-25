@@ -11,7 +11,7 @@ const register = async (req, res) => {
         const { username, email, password } = req.body;
         if (!username || !email || !password) {
             return res.status(401).json({
-                msg: "Please fill in all fields.",
+                message: "Please fill in all fields.",
                 success: false
             });
         }
@@ -19,6 +19,13 @@ const register = async (req, res) => {
         if (user) {
             return res.status(401).json({
                 message: "User already exists.",
+                success: false
+            })
+        }
+        const userName = await User.findOne({ username });
+        if(userName){
+            return res.status(401).json({
+                message: "Username already exists Please Change your Username.",
                 success: false
             })
         }
@@ -34,6 +41,7 @@ const register = async (req, res) => {
         })
     } catch (error) {
         console.log(error.message);
+        
 
     }
 }

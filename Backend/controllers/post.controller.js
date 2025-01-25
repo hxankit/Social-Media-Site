@@ -31,9 +31,9 @@ const addNewPost = async (req, res) => {
         // console.log(fileUri);
         
         const cloudResponce = await cloudinary.uploader.upload(fileUri);
-        console.log(cloudResponce);
-        console.log(caption);
-        console.log(autherId);
+        // console.log(cloudResponce);
+        // console.log(caption);
+        // console.log(autherId);
         
 
         
