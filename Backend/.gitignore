@@ -1,22 +1,26 @@
-# Node.js
-node_modules/
-Backend/.env
-Backend/node_modules
-*.env
-.npm/
-.yarn/
-.pnp/
-.pnp.js
-
 # Logs
-logs/
+logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# OS-specific files
+node_modules
+dist
+dist-ssr
+*.local
+
+.env
+*.env
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-Thumbs.db
-
-# IDE/Editor specific files
-.vscode/
-.idea/
-Backend/node_modules/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
