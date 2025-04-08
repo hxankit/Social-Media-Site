@@ -1,14 +1,11 @@
-import Router from 'express';
-import { isAuthenticated } from '../middlewares/isAuthenticated.js';
-import { sendMessage,getMessages } from '../controllers/message.controller.js';
+import express from "express";
+ import isAuthenticated from "../middlewares/isAuthenticated.js";
+import upload from "../middlewares/multer.js";
+import { getMessage, sendMessage } from "../controllers/message.controller.js";
 
-const router=Router();
+const router = express.Router();
 
-router.route("/send/:id").post(isAuthenticated,sendMessage)
-router.route("/all/:id").get(isAuthenticated,getMessages)
-
-
-
+router.route('/send/:id').post(isAuthenticated, sendMessage);
+router.route('/all/:id').get(isAuthenticated, getMessage);
  
-
 export default router;
