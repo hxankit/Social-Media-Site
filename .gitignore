@@ -1,22 +1,2 @@
-# Node.js
-node_modules/
-Backend/.env
-Backend/node_modules
-*.env
-.npm/
-.yarn/
-.pnp/
-.pnp.js
-
-# Logs
-logs/
-*.log
-
-# OS-specific files
-.DS_Store
-Thumbs.db
-
-# IDE/Editor specific files
-.vscode/
-.idea/
-Backend/node_modules/
+node_modules
+.env
