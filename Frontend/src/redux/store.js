@@ -1,7 +1,11 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import authSlice from "./authSlice.js";
+import postSlice from './postSlice.js';
+import socketSlice from "./socketSlice.js"
+import chatSlice from "./chatSlice.js";
+import rtnSlice from "./rtnSlice.js";
 
-import {
-    persistStore,
+import { 
     persistReducer,
     FLUSH,
     REHYDRATE,
@@ -9,29 +13,26 @@ import {
     PERSIST,
     PURGE,
     REGISTER,
-} from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import authSlice from './authSlice';
-import postSlice from './postSlice'
+} from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 
-// Persist configuration
+
 const persistConfig = {
     key: 'root',
     version: 1,
     storage,
-    // whitelist: ['auth','post'], // Only persist the auth reducer
-};
+}
 
-// Combine all reducers
 const rootReducer = combineReducers({
-    auth: authSlice,
-    posts:postSlice
-});
+    auth:authSlice,
+    post:postSlice,
+    socketio:socketSlice,
+    chat:chatSlice,
+    realTimeNotification:rtnSlice
+})
 
-// Wrap the root reducer with persistReducer
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
-// Configure the Redux store
 const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
@@ -41,8 +42,4 @@ const store = configureStore({
             },
         }),
 });
-
-// Create persistor
-const persistor = persistStore(store);
-
-export { store, persistor };
+export default store;

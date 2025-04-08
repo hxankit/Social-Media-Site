@@ -16,6 +16,7 @@ app.use(express.urlencoded({extended:true}));
 const corsOptions = {
     origin: "http://localhost:5173",
     credentials: true,
+    
     optionSuccessStatus: 200
 }
 app.use(cors(corsOptions));
@@ -31,9 +32,6 @@ app.get("/",(req,res)=>{
 app.use("/api/v1/user",userRoute);
 app.use("/api/v1/post",postRoute);
 app.use("/api/v1/message",messageRoute);
-
-
-
 
 connectDB().then(()=>{
     app.listen(PORT,()=>{

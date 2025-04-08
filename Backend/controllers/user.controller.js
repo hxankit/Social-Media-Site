@@ -20,6 +20,7 @@ const register = async (req, res) => {
             return res.status(401).json({
                 message: "User already exists.",
                 success: false
+                
             })
         }
         const userName = await User.findOne({ username });
@@ -136,13 +137,9 @@ const getProfile = async (req, res) => {
         const userId = req.params.id;
         console.log("this is params");
 
-        // console.log(req.params._id);
-
-
-        // Find user by ID
         const user = await User.findById(userId).select("-password");
 
-        // Handle case where user is not found
+       
         if (!user) {
             return res.status(404).json({
                 message: "User not found",
@@ -150,7 +147,7 @@ const getProfile = async (req, res) => {
             });
         }
 
-        // If user is found, send success response
+        
         return res.status(200).json({
             message: "Profile fetched successfully",
             success: true,
@@ -159,7 +156,7 @@ const getProfile = async (req, res) => {
     } catch (error) {
         console.error(error.message);
 
-        // Send error response
+        
         return res.status(500).json({
             message: "Internal server error",
             success: false,
