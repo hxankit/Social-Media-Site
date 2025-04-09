@@ -1,15 +1,23 @@
-import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp } from 'lucide-react'
-import React, { useState } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { toast } from 'sonner'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { setAuthUser } from '@/redux/authSlice'
-import CreatePost from './CreatePost'
-import { setPosts, setSelectedPost } from '@/redux/postSlice'
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
-import { Button } from './ui/button'
+import {
+    Heart,
+    Home,
+    LogOut,
+    MessageCircle,
+    PlusSquare,
+    Search,
+    TrendingUp
+} from 'lucide-react';
+import React, { useState } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { toast } from 'sonner';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuthUser } from '@/redux/authSlice';
+import CreatePost from './CreatePost';
+import { setPosts, setSelectedPost } from '@/redux/postSlice';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Button } from './ui/button';
 
 const LeftSidebar = () => {
     const navigate = useNavigate();
@@ -17,7 +25,6 @@ const LeftSidebar = () => {
     const { likeNotification } = useSelector(store => store.realTimeNotification);
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
-
 
     const logoutHandler = async () => {
         try {
@@ -30,9 +37,9 @@ const LeftSidebar = () => {
                 toast.success(res.data.message);
             }
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || 'Logout failed');
         }
-    }
+    };
 
     const sidebarHandler = (textType) => {
         if (textType === 'Logout') {
@@ -46,7 +53,7 @@ const LeftSidebar = () => {
         } else if (textType === 'Messages') {
             navigate("/chat");
         }
-    }
+    };
 
     const sidebarItems = [
         { icon: <Home />, text: "Home" },
@@ -58,64 +65,96 @@ const LeftSidebar = () => {
         {
             icon: (
                 <Avatar className='w-6 h-6'>
-                    <AvatarImage src={user?.profilePicture} alt="@shadcn" />
+                    <AvatarImage src={user?.profilePicture} alt="@user" />
                     <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
             ),
             text: "Profile"
         },
         { icon: <LogOut />, text: "Logout" },
-    ]
+    ];
+
     return (
-        <div className='fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-[16%] h-screen'>
-            <div className='flex flex-col'>
+        <>
+            {/* Desktop Sidebar */}
+            <div className='hidden sm:flex flex-col fixed top-0 left-0 z-10 px-4 border-r border-gray-300 w-[16%] h-screen bg-white'>
                 <h1 className='my-8 pl-3 font-bold text-xl'>SyncroLink</h1>
                 <div>
                     {
-                        sidebarItems.map((item, index) => {
-                            return (
-                                <div onClick={() => sidebarHandler(item.text)} key={index} className='flex items-center gap-3 relative hover:bg-gray-100 cursor-pointer rounded-lg p-3 my-3'>
-                                    {item.icon}
-                                    <span>{item.text}</span>
-                                    {
-                                        item.text === "Notifications" && likeNotification.length > 0 && (
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button size='icon' className="rounded-full h-5 w-5 bg-red-600 hover:bg-red-600 absolute bottom-6 left-6">{likeNotification.length}</Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent>
-                                                    <div>
-                                                        {
-                                                            likeNotification.length === 0 ? (<p>No new notification</p>) : (
-                                                                likeNotification.map((notification) => {
-                                                                    return (
-                                                                        <div key={notification.userId} className='flex items-center gap-2 my-2'>
-                                                                            <Avatar>
-                                                                                <AvatarImage src={notification.userDetails?.profilePicture} />
-                                                                                <AvatarFallback>CN</AvatarFallback>
-                                                                            </Avatar>
-                                                                            <p className='text-sm'><span className='font-bold'>{notification.userDetails?.username}</span> liked your post</p>
-                                                                        </div>
-                                                                    )
-                                                                })
-                                                            )
-                                                        }
+                        sidebarItems.map((item, index) => (
+                            <div
+                                onClick={() => sidebarHandler(item.text)}
+                                key={index}
+                                className='flex items-center gap-3 relative hover:bg-gray-100 cursor-pointer rounded-lg p-3 my-3'
+                            >
+                                {item.icon}
+                                <span>{item.text}</span>
+
+                                {item.text === "Notifications" && likeNotification.length > 0 && (
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button size='icon' className="rounded-full h-5 w-5 bg-red-600 hover:bg-red-600 absolute bottom-6 left-6">
+                                                {likeNotification.length}
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent>
+                                            <div>
+                                                {likeNotification.map((notification) => (
+                                                    <div key={notification.userId} className='flex items-center gap-2 my-2'>
+                                                        <Avatar>
+                                                            <AvatarImage src={notification.userDetails?.profilePicture} />
+                                                            <AvatarFallback>CN</AvatarFallback>
+                                                        </Avatar>
+                                                        <p className='text-sm'>
+                                                            <span className='font-bold'>{notification.userDetails?.username}</span> liked your post
+                                                        </p>
                                                     </div>
-                                                </PopoverContent>
-                                            </Popover>
-                                        )
-                                    }
-                                </div>
-                            )
-                        })
+                                                ))}
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
+                            </div>
+                        ))
                     }
                 </div>
             </div>
 
+            
+<div className='sm:hidden fixed bottom-0 left-0 z-1 w-full border-t border-gray-300 bg-white flex justify-around items-center py-2 px-4'>
+    {/* Home */}
+    <div onClick={() => sidebarHandler("Home")} className='flex flex-col items-center text-xs cursor-pointer'>
+        <Home className="w-5 h-5" />
+        <span className='text-[10px]'>Home</span>
+    </div>
+
+    {/* Messages */}
+    <div onClick={() => sidebarHandler("Messages")} className='flex flex-col items-center text-xs cursor-pointer'>
+        <MessageCircle className="w-5 h-5" />
+        <span className='text-[10px]'>Message</span>
+    </div>
+
+    {/* Create */}
+    <div onClick={() => sidebarHandler("Create")} className='flex flex-col items-center text-xs cursor-pointer'>
+        <PlusSquare className="w-5 h-5" />
+        <span className='text-[10px]'>Create</span>
+    </div>
+
+    {/* Profile */}
+    <div onClick={() => sidebarHandler("Profile")} className='flex flex-col items-center text-xs cursor-pointer'>
+        <Avatar className='w-6 h-6'>
+            <AvatarImage src={user?.profilePicture} />
+            <AvatarFallback>U</AvatarFallback>
+        </Avatar>
+        <span className='text-[10px]'>Profile</span>
+    </div>
+</div>
+
+
+            {/* Create Post Modal */}
             <CreatePost open={open} setOpen={setOpen} />
+        </>
+    );
+};
 
-        </div>
-    )
-}
-
-export default LeftSidebar
+export default LeftSidebar;
