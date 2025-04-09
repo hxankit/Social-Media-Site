@@ -4,40 +4,86 @@ import jwt from "jsonwebtoken";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import { Post } from "../models/post.model.js";
+import { Otp } from "../models/Otp.js";
+import nodemailer from "nodemailer";
+
+
+export const sendOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+        await Otp.deleteMany({ email }); // clear old OTPs
+
+        await Otp.create({ email, otp: otpCode });
+
+        const transporter = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: "Your OTP Code",
+            text: `Your OTP is ${otpCode}. It will expire in 5 minutes.`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return res.status(500).json({ message: "Failed to send OTP", error });
+            }
+            return res.status(200).json({ message: "OTP sent successfully" });
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Something went wrong", error });
+    }
+};
+
 export const register = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
-       
-        
-        if (!username || !email || !password) {
-            return res.status(401).json({
-                message: "Something is missing, please check!",
-                success: false,
-            });
+        const { username, email, password, otp } = req.body;
+
+        if (!username || !email || !password || !otp) {
+            return res.status(400).json({ message: "All fields are required" });
         }
-        const user = await User.findOne({ email });
-        // console.log(user);
+
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+
+        const existingOtp = await Otp.findOne({ email, otp });
+        console.log(existingOtp);
         
-        if (user) {
-            return res.status(401).json({
-                message: "Try different email",
-                success: false,
-            });
-        };
+        if (!existingOtp) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
+
         await User.create({
             username,
             email,
-            password: hashedPassword
+            password: hashedPassword,
         });
-        return res.status(201).json({
-            message: "Account created successfully.",
-            success: true,
-        });
+
+        await Otp.deleteMany({ email });
+
+        return res.status(201).json({ success: true, message: "User registered successfully" });
     } catch (error) {
-        console.log(error);
+        return res.status(500).json({ message: "Registration failed", error });
     }
-}
+};
+
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -209,3 +255,8 @@ export const followOrUnfollow = async (req, res) => {
         console.log(error);
     }
 }
+
+
+
+
+
