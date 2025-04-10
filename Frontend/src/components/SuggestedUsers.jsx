@@ -8,7 +8,6 @@ const SuggestedUsers = () => {
   const { suggestedUsers, user } = useSelector((store) => store.auth);
   const [followingMap, setFollowingMap] = useState({});
 
-  // 🟡 Build follow status based on actual user.following list
   useEffect(() => {
     if (suggestedUsers && user) {
       const initialMap = {};
@@ -44,11 +43,14 @@ const SuggestedUsers = () => {
   return (
     <div className="my-10">
       <div className="flex items-center justify-between text-sm">
-        <h1 className="font-semibold text-gray-600">Suggested for you</h1>
+        <h1 className="font-semibold text-gray-600 dark:text-gray-300">Suggested for you</h1>
       </div>
 
       {suggestedUsers?.map((user) => (
-        <div key={user._id} className="flex items-center justify-between my-5">
+        <div
+          key={user._id}
+          className="flex items-center justify-between my-5 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
+        >
           <div className="flex items-center gap-3">
             <Link to={`/profile/${user._id}`}>
               <Avatar>
@@ -65,18 +67,18 @@ const SuggestedUsers = () => {
             <div className="flex flex-col">
               <Link
                 to={`/profile/${user._id}`}
-                className="text-sm font-semibold hover:underline"
+                className="text-sm font-semibold hover:underline text-black dark:text-white"
               >
                 {user?.username}
               </Link>
-              <span className="text-gray-600 text-sm">
+              <span className="text-gray-600 dark:text-gray-400 text-sm">
                 {user?.bio || 'Bio here...'}
               </span>
             </div>
           </div>
 
           <button
-            className="text-[#3BADF8] text-xs font-bold cursor-pointer hover:text-[#3495d6]"
+            className="text-[#3BADF8] text-xs font-bold cursor-pointer hover:text-[#3495d6] dark:text-blue-400 dark:hover:text-blue-300"
             onClick={() => handleFollowToggle(user._id)}
           >
             {followingMap[user._id] ? 'Unfollow' : 'Follow'}

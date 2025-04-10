@@ -51,7 +51,7 @@ const Post = ({ post }) => {
 
   const commentHandler = async () => {
     try {
-      const res = await axios.post(`https://instaclone-g9h5.onrender.com/api/v1/post/${post._id}/comment`, { text }, {
+      const res = await axios.post(`http://localhost:800/api/v1/post/${post._id}/comment`, { text }, {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true
       });
@@ -73,7 +73,7 @@ const Post = ({ post }) => {
 
   const deletePostHandler = async () => {
     try {
-      const res = await axios.delete(`https://instaclone-g9h5.onrender.com/api/v1/post/delete/${post?._id}`, { withCredentials: true })
+      const res = await axios.delete(`http://localhost:8000/api/v1/post/delete/${post?._id}`, { withCredentials: true })
       if (res.data.success) {
         const updatedPostData = posts.filter(p => p._id !== post?._id);
         dispatch(setPosts(updatedPostData));
@@ -87,7 +87,7 @@ const Post = ({ post }) => {
 
   const bookmarkHandler = async () => {
     try {
-      const res = await axios.get(`https://instaclone-g9h5.onrender.com/api/v1/post/${post._id}/bookmark`, { withCredentials: true });
+      const res = await axios.get(`http://localhost:8000/api/v1/post/${post._id}/bookmark`, { withCredentials: true });
       if (res.data.success) {
         toast.success(res.data.message);
       }
