@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import SuggestedUsers from './SuggestedUsers'
 
-const RightSidebarbar = () => {
+const RightSidebar = () => {
   const { user } = useSelector(store => store.auth)
 
   if (!user) return null
@@ -35,4 +35,4 @@ const RightSidebarbar = () => {
   )
 }
 
-export default RightSidebarbar
+export default RightSidebar
