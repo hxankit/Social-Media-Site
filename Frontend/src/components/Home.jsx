@@ -1,7 +1,7 @@
 import React from 'react';
 import Feed from './Feed';
 import { Outlet } from 'react-router-dom';
-import RightSidebarbar from './RightSidebar.jsx';
+import RightSidebarbar from './rightSidebar.jsx';
 import useGetAllPost from '@/hooks/useGetAllPost';
 import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers';
 
