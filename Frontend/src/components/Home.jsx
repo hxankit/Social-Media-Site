@@ -1,7 +1,7 @@
 import React from 'react';
 import Feed from './Feed';
 import { Outlet } from 'react-router-dom';
-import RightSidebar from './RightSidebar.jsx';
+import RightSidebarbar from './RightSidebar.jsx';
 import useGetAllPost from '@/hooks/useGetAllPost';
 import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers';
 
@@ -19,7 +19,7 @@ const Home = () => {
 
       {/* Right Sidebar - hidden on smaller screens */}
       <div className="hidden lg:block w-[25%]">
-        <RightSidebar />
+        <RightSidebarbar />
       </div>
     </div>
   );
